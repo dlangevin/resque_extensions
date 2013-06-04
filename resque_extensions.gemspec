@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = ResqueExtensions::VERSION
   gem.authors       = ["Dan Langevin"]
   gem.email         = ["dan.langevin@lifebooker.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{An extension to Resque that makes it act more like Delayed::Job}
+  gem.summary       = %q{Resque extensions to add .async}
+  gem.homepage      = "https://github.com/dlangevin/resque_extensions"
 
   # works with resque before 2.0
   gem.add_dependency "resque", "~> 1"
