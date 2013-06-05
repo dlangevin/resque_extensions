@@ -30,6 +30,22 @@ describe ResqueExtensions do
         job.perform
       end
 
+      it "calls the method if ResqueExtensions.async is 
+        set to false" do
+        begin
+          ResqueExtensions.async = false
+
+          my_instance = MyClass.create(:name => "Dan")
+          my_instance.expects(:my_instance_method)
+
+          # async just calls send when ResqueExtensions.async is false
+          my_instance.async(:my_instance_method)
+
+        ensure
+          ResqueExtensions.async = true
+        end
+      end
+
     end
 
     context "#async" do

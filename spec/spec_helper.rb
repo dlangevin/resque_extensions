@@ -8,9 +8,14 @@ require 'resque'
 
 Bundler.setup
 
+db_path = File.expand_path(
+  File.dirname(__FILE__) + "/../tmp/test.sqlite"
+)
+puts db_path
+
 ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
-  :database => File.dirname(__FILE__) + "/../tmp/test.sqlite"
+  :database => db_path
 )
 
 Resque.redis = MockRedis.new

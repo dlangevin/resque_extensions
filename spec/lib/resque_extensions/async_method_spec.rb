@@ -74,7 +74,7 @@ module ResqueExtensions
 
     end
 
-    context "#enqueue" do
+    context "#enqueue!" do
 
       it "creates a new job for the class or instance" do
         async_method = AsyncMethod.new(MyClass, :my_class_method)
@@ -138,7 +138,6 @@ module ResqueExtensions
         })
 
       end
-
     end
 
     context "#queue" do

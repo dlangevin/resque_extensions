@@ -35,6 +35,8 @@ module ResqueExtensions
       @caller.is_a?(Class)
     end
 
+    # enqueue the job so that it can be
+    # performed
     def enqueue!
       Resque::Job.create(
         self.queue, self.class, *self.data_to_enqueue
