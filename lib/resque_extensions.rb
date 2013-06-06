@@ -34,11 +34,14 @@ module ResqueExtensions
   module ObjectMethods
     # call this method asynchronously
     def async(*args)
+
+      async_method = ResqueExtensions::AsyncMethod.new(self, *args)
+      
       if ResqueExtensions.async == true
-        ResqueExtensions::AsyncMethod.new(self, *args).enqueue!
+        async_method.enqueue!
       # just call inline
       else
-        self.send(*args)
+        async_method.perform
       end
     end
   end

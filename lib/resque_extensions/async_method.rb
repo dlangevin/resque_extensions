@@ -10,10 +10,7 @@ module ResqueExtensions
     attr_reader :args
 
     def self.perform(*args)
-      data = self.reify_data(args)
-      caller = data.shift
-      # call the method with all the args
-      caller.send(*data)
+      self.new(*self.reify_data(args)).perform
     end
 
     # Constructor
@@ -46,6 +43,11 @@ module ResqueExtensions
     # Is the caller an instance or a class
     def instance_method?
       !self.class_method?
+    end
+
+    # Run our method
+    def perform
+      @caller.send(@method, *@args)
     end
 
     # the queue for this job
