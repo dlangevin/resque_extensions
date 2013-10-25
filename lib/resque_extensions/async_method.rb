@@ -73,10 +73,10 @@ module ResqueExtensions
         data = data.split("::")
         id = data.pop
         class_name = data[1..-1].join("::")
-        data = Resque::Job.constantize(class_name).find(id)
+        data = Resque::Job.const_get(class_name).find(id)
       # classes become strings prefixed by _Class
       elsif data.to_s =~ /^#{CLASS_PREFIX}/
-        data = Resque::Job.constantize(data.gsub(/^#{CLASS_PREFIX}/,''))
+        data = Resque::Job.const_get(data.gsub(/^#{CLASS_PREFIX}/,''))
       end
       # return data
       data
