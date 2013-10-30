@@ -15,7 +15,6 @@ module ResqueExtensions
 
         job = Resque.reserve("default")
         job.perform
-
       end
 
       it "deserializes and calls a method on an ActiveRecord" do
@@ -31,6 +30,18 @@ module ResqueExtensions
         job = Resque.reserve("default")
         job.perform
 
+      end
+
+      it 'properly looks up class names that are namespaced' do
+
+        async_method = AsyncMethod.new(RootModule::InnerClass, :my_class_method, 'a')
+        async_method.enqueue!
+
+        RootModule::InnerClass.expects(:send).with('my_class_method', 'a')
+        InnerClass.expects(:send).never
+
+        job = Resque.reserve('default')
+        job.perform
       end
 
     end
@@ -81,9 +92,9 @@ module ResqueExtensions
         async_method.enqueue!
 
         job = Resque.reserve("default")
-        
+
         job.payload.should eql({
-          "class" => "ResqueExtensions::AsyncMethod", 
+          "class" => "ResqueExtensions::AsyncMethod",
           "args" => ["_Class::MyClass", "my_class_method"]
         })
 
@@ -97,11 +108,11 @@ module ResqueExtensions
         async_method.enqueue!
 
         job = Resque.reserve("default")
-        
+
         job.payload.should eql({
-          "class" => "ResqueExtensions::AsyncMethod", 
+          "class" => "ResqueExtensions::AsyncMethod",
           "args" => [
-            "_ActiveRecord::MyClass::#{my_instance.id}", 
+            "_ActiveRecord::MyClass::#{my_instance.id}",
             "my_instance_method"
           ]
         })
@@ -113,10 +124,10 @@ module ResqueExtensions
         my_instance = MyClass.create(:name => "Dan")
 
         async_method = AsyncMethod.new(
-          MyClass, 
-          :my_class_method, 
-          [my_instance], 
-          my_instance, 
+          MyClass,
+          :my_class_method,
+          [my_instance],
+          my_instance,
           {:a => my_instance}
         )
         async_method.enqueue!
@@ -127,9 +138,9 @@ module ResqueExtensions
         job = Resque.reserve("default")
 
         job.payload.should eql({
-          "class" => "ResqueExtensions::AsyncMethod", 
+          "class" => "ResqueExtensions::AsyncMethod",
           "args" => [
-            "_Class::MyClass", 
+            "_Class::MyClass",
             "my_class_method",
             [instance_string],
             instance_string,

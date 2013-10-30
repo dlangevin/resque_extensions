@@ -73,10 +73,10 @@ module ResqueExtensions
         data = data.split("::")
         id = data.pop
         class_name = data[1..-1].join("::")
-        data = Resque::Job.const_get(class_name).find(id)
+        data = self.constantize(class_name).find(id)
       # classes become strings prefixed by _Class
       elsif data.to_s =~ /^#{CLASS_PREFIX}/
-        data = Resque::Job.const_get(data.gsub(/^#{CLASS_PREFIX}/,''))
+        data = self.constantize(data.gsub(/^#{CLASS_PREFIX}/, ''))
       end
       # return data
       data
@@ -123,6 +123,18 @@ module ResqueExtensions
       keys = argument.keys.collect(&:to_sym)
       # if we have overlaps, we've been passed options
       return (keys & OPTIONAL_SETTINGS).length > 0
+    end
+
+    def self.constantize(namespaced_class)
+      names = namespaced_class.split('::')
+      names.shift if names.empty? || names.first.empty?
+
+      constant = Object
+      names.each do |name|
+        constant = constant.const_defined?(name) ? constant.const_get(name) : constant.const_missing(name)
+      end
+
+      constant
     end
   end
 end

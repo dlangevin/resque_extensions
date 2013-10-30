@@ -51,6 +51,18 @@ RSpec.configure do |config|
 
     end
 
+    module RootModule
+      class InnerClass
+        def self.my_class_method(arg)
+        end
+      end
+    end
+
+    module InnerClass
+      def self.my_class_method(arg)
+      end
+    end
+
   end
 
 end
